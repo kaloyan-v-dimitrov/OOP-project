@@ -30,6 +30,19 @@ public:
     void setPriority(Priority p) { priority = p; }
     void setDeadline(time_t d)   { deadline = d; }
 
+    void addSubtask(const Subtask& s) { subtasks.push_back(s); }
+
+    bool toggleSubtask(int subtaskId) {
+        for (auto& s : subtasks)
+            if (s.getId() == subtaskId) { s.toggle(); return true; }
+        return false;
+    }
+
+    bool isOverdue() const {
+        if (deadline == 0) return false;
+        return time(nullptr) > deadline;
+    }
+
     void displayInfo() const override {}
     double getProgress() const override { return 0.0; }
 
