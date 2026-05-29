@@ -43,8 +43,25 @@ public:
         return time(nullptr) > deadline;
     }
 
-    void displayInfo() const override {}
-    double getProgress() const override { return 0.0; }
+    double getProgress() const override {
+        if (subtasks.empty()) return 0.0;
+        int done = 0;
+        for (const auto& s : subtasks) if (s.getIsDone()) done++;
+        return (double)done / subtasks.size() * 100.0;
+    }
+
+    void displayInfo() const override {
+        cout << "  [" << id << "] " << title
+             << " | " << priorityToString(priority)
+             << " | Deadline: " << formatDate(deadline)
+             << (isOverdue() ? " *** OVERDUE ***" : "") << "\n";
+        if (!description.empty())
+            cout << "       " << description << "\n";
+        if (!subtasks.empty()) {
+            cout << "       Subtasks (" << (int)getProgress() << "% complete):\n";
+            for (const auto& s : subtasks) s.displayInfo();
+        }
+    }
 
     static string priorityToString(Priority p) {
         if (p == Priority::LOW)  return "Low";
