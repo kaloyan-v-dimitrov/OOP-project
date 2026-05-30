@@ -68,4 +68,33 @@ public:
         if (p == Priority::HIGH) return "High";
         return "Medium";
     }
+
+    friend ostream& operator<<(ostream& out, const Task& t) {
+        out << t.id << " " << (int)t.priority << " " << t.deadline << " " << t.title << "\n";
+        if (!t.description.empty()) out << t.description; else out << "-";
+        out << "\n";
+        for (const auto& s : t.subtasks)
+            out << s << "\n";
+        return out;
+    }
+
+    friend istream& operator>>(istream& in, Task& t) {
+        int tid, prio;
+        time_t dl;
+        string title, desc;
+
+        if (!(in >> tid >> prio >> dl)) return in;
+        in.ignore();
+        if (!getline(in, title) || title.empty()) { in.setstate(ios::failbit); return in; }
+        if (!getline(in, desc))                   { in.setstate(ios::failbit); return in; }
+        if (desc == "-") desc = "";
+
+        t.id          = tid;
+        t.priority    = (Priority)prio;
+        t.deadline    = dl;
+        t.title       = title;
+        t.description = desc;
+        t.subtasks.clear();
+        return in;
+    }
 };
