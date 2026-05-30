@@ -53,5 +53,40 @@ public:
         return total / tasks.size();
     }
 
-    void displayInfo() const override {}
+    void displayInfo() const override {
+        cout << "=== Project [" << id << "]: " << title
+             << " | Deadline: " << formatDate(deadline)
+             << " | Progress: " << (int)getProgress() << "% ===\n";
+        if (!description.empty()) cout << "    " << description << "\n";
+        if (tasks.empty()) cout << "    (no tasks)\n";
+        else for (const auto& t : tasks) t->displayInfo();
+    }
+
+    friend ostream& operator<<(ostream& out, const Project& p) {
+        out << p.id << " " << p.deadline << " " << p.title << "\n";
+        if (!p.description.empty()) out << p.description; else out << "-";
+        out << "\n";
+        for (const auto& t : p.tasks)
+            out << *t << "-----------------------\n";
+        return out;
+    }
+
+    friend istream& operator>>(istream& in, Project& p) {
+        int pid;
+        time_t dl;
+        string title, desc;
+
+        if (!(in >> pid >> dl)) return in;
+        in.ignore();
+        if (!getline(in, title) || title.empty()) { in.setstate(ios::failbit); return in; }
+        if (!getline(in, desc))                   { in.setstate(ios::failbit); return in; }
+        if (desc == "-") desc = "";
+
+        p.id          = pid;
+        p.deadline    = dl;
+        p.title       = title;
+        p.description = desc;
+        p.tasks.clear();
+        return in;
+    }
 };
