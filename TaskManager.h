@@ -18,8 +18,10 @@ class TaskManager {
 
 public:
     TaskManager() {}
+
     explicit TaskManager(vector<unique_ptr<Project>> projects)
         : projects(move(projects)) {}
+
 
     Project* createProject(const string& title,
                            const string& description = "",
@@ -49,6 +51,53 @@ public:
         vector<Project*> result;
         for (const auto& p : projects) result.push_back(p.get());
         return result;
+    }
+
+    Task* addTask(int projectId, const string& title,
+                  const string& desc = "",
+                  Priority priority = Priority::MEDIUM,
+                  time_t deadline = 0) {
+        auto* proj = findProject(projectId);
+        if (!proj) return nullptr;
+        auto* t = new Task(title, desc, priority, deadline);
+        proj->addTask(t);
+        return t;
+    }
+
+    bool removeTask(int projectId, int taskId) {
+        auto* proj = findProject(projectId);
+        return proj && proj->removeTask(taskId);
+    }
+
+    bool editTask(int projectId, int taskId,
+                  const string& title, const string& desc,
+                  Priority priority, time_t deadline) {
+        auto* proj = findProject(projectId);
+        if (!proj) return false;
+        auto* task = proj->findTask(taskId);
+        if (!task) return false;
+        task->setTitle(title);
+        task->setDescription(desc);
+        task->setPriority(priority);
+        task->setDeadline(deadline);
+        return true;
+    }
+
+
+    bool addSubtask(int projectId, int taskId, const string& title) {
+        auto* proj = findProject(projectId);
+        if (!proj) return false;
+        auto* task = proj->findTask(taskId);
+        if (!task) return false;
+        task->addSubtask(Subtask(title));
+        return true;
+    }
+
+    bool toggleSubtask(int projectId, int taskId, int subtaskId) {
+        auto* proj = findProject(projectId);
+        if (!proj) return false;
+        auto* task = proj->findTask(taskId);
+        return task && task->toggleSubtask(subtaskId);
     }
 
     const vector<unique_ptr<Project>>& getAllProjects() const { return projects; }
