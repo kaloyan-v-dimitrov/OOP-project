@@ -1,0 +1,3 @@
+/workspaces/OOP-project/task manager/build/CMakeFiles/task_manager.dir
+/workspaces/OOP-project/task manager/build/CMakeFiles/edit_cache.dir
+/workspaces/OOP-project/task manager/build/CMakeFiles/rebuild_cache.dir

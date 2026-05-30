@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/task_manager.dir/src/main.cpp.o CMakeFiles/task_manager.dir/src/Trackable.cpp.o CMakeFiles/task_manager.dir/src/TaskManager.cpp.o -o task_manager 
